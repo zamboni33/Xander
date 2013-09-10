@@ -1,5 +1,6 @@
-/*****************************************************************/
-/*
+
+/*---------------------------------------------------------------------
+ *
  * assembler.c
  * 
  * 
@@ -9,12 +10,12 @@
  * LC3b Assembler
  * 
  * Assembler application for the conversion of a human readable LC3b 
- *  file int LC3b machine code.
+ * file int LC3b machine code.
  * 
  *
- *****************************************************************/
+ ---------------------------------------------------------------------*/
  
- /************************ Dependencies **************************/
+/*---------------------------- Includes ------------------------------*/
  
  /* Standard */
  #include <stdio.h>
@@ -27,13 +28,9 @@
  /* User */
  /* #include "assembler.h" */
  
- /************************** Globals *****************************/
+/*------------------------------ Types -------------------------------*/
  
- /**************************** Uses ******************************/
-
- /***************************        *****************************/
-  
-  typedef struct 
+   typedef struct 
  {
 	int lineComponentCount;
 	char** lineComponent;
@@ -45,7 +42,9 @@
 	unsigned int memoryLocation;
  } symbolTable;
  
- /************************* Prototypes ***************************/
+/*---------------------------- Constants -----------------------------*/
+
+/*--------------------------- Prototypes -----------------------------*/
  
  brokenLine* breakLine (int* lineSize, char* readIn);
  char* fetchLine (int* lineSize, char* readIn, FILE* successfulOpen);
@@ -53,20 +52,18 @@
  int isThisALabel (char* labelPossible, char** opcodeConstants);
  void defineConstants(char** opcodeConstants);
  
- /*********************** Implementation *************************/
- 
- 
- /****************************************************************/
+/*------------------------- Implementation ---------------------------*/
  
  int main (int argc, char* argv[])
  {
 	 
- /*****************************************************************
+ /*
   * Inputs: File containing human readable LC3 code, Output Filename
   * Outputs: LC3b bytecoded assembly
-  * Note: If the output filename exists, it's data will be erased.
+  * Note: If the output filename exists, it's data will be erased. 
   * 
-  *****************************************************************/
+----------------------------------------------------------------------*/
+	
 	/* Variable List */
 	
 	FILE* successfulOpen;
@@ -107,7 +104,7 @@
 		return(1);
 	}
 	
-/****************************** Creating Symbol Table ***********************************/	
+/*-------------------- Creating Symbol Table -------------------------*/	
 	
 	/* Begin parsing assembly input file */
 	
@@ -171,7 +168,7 @@
 		currentLineSize += 1;
 	}
 	
-/*****************************************************************************************/
+/*------------------- Debug Struct Printing --------------------------*/
 	
 	for( j = 0; j < currentLineSize; j += 1){	
 		for( i = 0; i < currentLine[j]->lineComponentCount; i += 1){
@@ -186,30 +183,20 @@
 	return(0);
   }
  
- /****************************************************************/ 
+/*------------------------- Function ---------------------------------*/
   
   brokenLine* breakLine (int* lineSize, char* readIn)
- {
+ { 
 	 
- /*****************************************************************
-  * Inputs: Successful file read int, memory to read to, FILE to read from
-  * Outputs: Returns the next command in char* form.
-  * Note: Returns on spaces, commas, semicolons, or newlines.
-  * 		Anything else that marks the end of a command should
-  * 		trip this here!
-  * 
-  *****************************************************************/
  /*
-  * 
-  * Create memory here to hold the read in command;
-  * Cap it at the maximum a label can be.
-  * Save everything and worry about error checking later.
-  */
-	
+  * Inputs: Size of and line to read
+  * Outputs: The line broken into args
+  *  
+  --------------------------------------------------------------------*/
+
 	int i = 0;
 	int j = 0;
 	brokenLine* currentLine = (brokenLine*) malloc (sizeof(brokenLine));
-	char* errorMessage = "Label too long";
 	int errorFlag = 0;
 	
 	/* printf("Inside breakLine\n"); */
@@ -228,13 +215,6 @@
 				currentLine->lineComponent[currentLine->lineComponentCount][j] = tolower(readIn[i]);
 				i += 1;
 				j += 1;
-				/*
-				if(j == 20){
-					currentLine->lineComponent[currentLine->lineComponentCount] = errorMessage; 
-					currentLine->lineComponentCount += 1;
-					return(currentLine);
-				}
-				*/
 			}
 			currentLine->lineComponent[currentLine->lineComponentCount][j] = 0;
 			i -= 1;
@@ -244,17 +224,18 @@
 	return(currentLine);
 } 
  
- /****************************************************************/ 
+/*------------------------- Function ---------------------------------*/
   
   char* fetchLine (int* lineSize, char* readIn, FILE* successfulOpen)
  {
 	 
- /*****************************************************************
+ /*
   * Inputs: Successful file read int, memory to read to, FILE to read from
   * Outputs: Returns a line of code in char* form.
   * Note: This function filters out commas and comments.
   * 
-  *****************************************************************/
+  --------------------------------------------------------------------*/
+  
  	fpos_t savedPosition;
 	int counter = 0;
 	int i = 0;
@@ -298,23 +279,24 @@
 		}
 	}
 	
-	*lineSize = fread( (char*) readIn, 1, 1, successfulOpen);
+	fread( (char*) readIn, 1, 1, successfulOpen);
 	
 	*lineSize = lengthResult;
 	
 	return(newLine);
 } 
 
- /****************************************************************/ 
+/*------------------------- Function ---------------------------------*/ 
  
   char* assignMemory (brokenLine* origLine, unsigned int* startPos)
  {
 	 
- /*****************************************************************
+ /*
   * Inputs: orig Line memory information
   * Outputs: Variable for where memory starts
   * 
-  *****************************************************************/
+  --------------------------------------------------------------------*/
+  
 	  char* hexString = (char*) malloc(sizeof(char) * 6);
 	  
 	  if(origLine->lineComponent[1][0] == '#'){
@@ -331,58 +313,50 @@
 }  
   
   
- /****************************************************************/ 
+/*------------------------- Function ---------------------------------*/
  
   int isThisALabel (char* labelPossible, char** opcodeConstants)
  {
 	 
- /*****************************************************************
+ /*
   * Inputs: 1st argument of a line of code
   * Outputs: Bool specifying whether or not it is a label
   * 
-  *****************************************************************/  
+  --------------------------------------------------------------------*/
 
 	int i = 0;
 	int counter = 0;
 	
-	if(labelPossible[0] == 'x'){
-		return(0);
-	}
+	if(labelPossible[0] == 'x'){return(0);}
 	
 	while(labelPossible[i] != 0){
-		if(!isalnum(labelPossible[i])){
-			return(0);
-		}
+		if(!isalnum(labelPossible[i])){return(0);}
 		i += 1;
 		counter += 1;
 	}
 	
-	if(counter > 19){
-		return(0);
-	}
+	if(counter > 19){return(0);}
 	
 	for(i = 0; i < 32; i += 1){
-		if(!strcmp(labelPossible, opcodeConstants[i])){
-			return(0);
-		}
+		if(!strcmp(labelPossible, opcodeConstants[i])){return(0);}
 	}
 	
-	printf("Length of the potential label is: %d\n", counter);
+	/*printf("Length of the potential label is: %d\n", counter);*/
 	
 	return(1);
  }
 
 
- /****************************************************************/ 
+/*------------------------- Function ---------------------------------*/
  
   void defineConstants (char** opcodeConstants)
  {
 	 
- /*****************************************************************
+ /*
   * Inputs: char** array to hold opcodes as strings
-  * Outputs:
+  * Outputs: Initialization
   * 
-  *****************************************************************/  
+  --------------------------------------------------------------------*/ 
   
 	opcodeConstants[0] = "add";
 	opcodeConstants[1] = "and";
@@ -416,8 +390,6 @@
 	opcodeConstants[29] = "brnz";
 	opcodeConstants[30] = "brzp";
 	opcodeConstants[31] = "brnzp";
-	
-	
  }
 	
 	
