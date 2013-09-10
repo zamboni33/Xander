@@ -72,7 +72,9 @@
 	int j;
 	int labelFlag = 0;
 	int* lineSize;
+	int totalLineCount = 0;
 	unsigned int* memoryInt;
+	unsigned int* memoryIntSecondPass;
 	int symbolTableSize = 0;
 	int currentLineSize = 0;
 	int maxSymbolTableSize = 100;
@@ -125,6 +127,8 @@
 		}
 	} while (strcmp(currentLine[currentLineSize]->lineComponent[0], ".orig"));
 	memoryBegin = assignMemory(currentLine[currentLineSize], memoryInt);
+	totalLineCount += 1;
+	/* *memoryIntSecondPass = *memoryInt; */
 	printf("Memory Start: %d.\n", *memoryInt);
 	
 	currentLineSize += 1;
@@ -162,6 +166,10 @@
 			currentSymbolTable[symbolTableSize]->symbol = currentLine[currentLineSize]->lineComponent[0];
 			currentSymbolTable[symbolTableSize]->memoryLocation = *memoryInt;
 			symbolTableSize += 1;
+			
+			/* Removing the label from the lineComponent list. */
+			currentLine[currentLineSize]->lineComponent = & (currentLine[currentLineSize]->lineComponent[1]);
+			currentLine[currentLineSize]->lineComponentCount -= 1;
 		}
 		*memoryInt += 2;
 	
@@ -182,8 +190,14 @@
 		
 	return(0);
   }
+  
+
+/*-------------------------- Second Pass -----------------------------*/  
+
+
+  
  
-/*------------------------- Function ---------------------------------*/
+/*--------------------------- Function -------------------------------*/
   
   brokenLine* breakLine (int* lineSize, char* readIn)
  { 
@@ -224,7 +238,7 @@
 	return(currentLine);
 } 
  
-/*------------------------- Function ---------------------------------*/
+/*--------------------------- Function -------------------------------*/
   
   char* fetchLine (int* lineSize, char* readIn, FILE* successfulOpen)
  {
@@ -286,7 +300,7 @@
 	return(newLine);
 } 
 
-/*------------------------- Function ---------------------------------*/ 
+/*--------------------------- Function -------------------------------*/ 
  
   char* assignMemory (brokenLine* origLine, unsigned int* startPos)
  {
@@ -313,7 +327,7 @@
 }  
   
   
-/*------------------------- Function ---------------------------------*/
+/*--------------------------- Function -------------------------------*/
  
   int isThisALabel (char* labelPossible, char** opcodeConstants)
  {
@@ -347,7 +361,7 @@
  }
 
 
-/*------------------------- Function ---------------------------------*/
+/*--------------------------- Function -------------------------------*/
  
   void defineConstants (char** opcodeConstants)
  {
@@ -360,7 +374,7 @@
   
 	opcodeConstants[0] = "add";
 	opcodeConstants[1] = "and";
-	opcodeConstants[2] = "brn";
+	opcodeConstants[2]	 = "puts";
 	opcodeConstants[3] = "halt";
 	opcodeConstants[4] = "jmp";
 	opcodeConstants[5] = "jsr";
@@ -382,7 +396,7 @@
 	opcodeConstants[21] = "in";
 	opcodeConstants[22] = "out";
 	opcodeConstants[23] = "getc";
-	opcodeConstants[24]	 = "puts";
+	opcodeConstants[24] = "brn";
 	opcodeConstants[25] = "brp";
 	opcodeConstants[26] = "brnp";
 	opcodeConstants[27] = "br";
