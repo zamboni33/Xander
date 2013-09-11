@@ -32,6 +32,7 @@
    typedef struct 
  {
 	int lineComponentCount;
+	int linePosition;
 	char** lineComponent;
  } brokenLine;
  
@@ -48,10 +49,11 @@
  brokenLine* breakLine (int* lineSize, char* readIn);
  char* fetchLine (int* lineSize, char* readIn, FILE* successfulOpen);
  char* assignMemory(brokenLine* currentLine, unsigned int* memory);
- int isThisALabel (char* labelPossible, char** opcodeConstants);
+ int isThisALabel (char* labelPossible, char** opcodeConstants, char** psuedoOpcodes, int linePosition);
  void defineConstants(char** opcodeConstants);
- int decodeCommand (char* command, char** opcodeConstants);
- void analyzeCommand(int commandMatch, brokenLine* currentLine[i]);
+ void definePsuedoOps (char** psuedoOpcodeConstants);
+ int decodeCommand (char* command, char** opcodeConstants, int linePosition);
+ void analyzeCommand(int commandMatch, brokenLine* currentLine /* Dereferenced */);
  
 /*------------------------- Implementation ---------------------------*/
  
@@ -70,6 +72,7 @@
 	
 	int i;
 	int j;
+	int sourceFileLocation = 0;
 	int labelFlag = 0;
 	int* lineSize;
 	int totalLineCount = 0;
@@ -86,6 +89,7 @@
 	char* memoryBegin;
 	char* str;
 	char** opcodeConstants;
+	char** psuedoOpcodes;
 	
 	brokenLine** currentLine;
 	brokenLine** tempLinePtr;
@@ -96,7 +100,9 @@
 	/* Creating Opcode List */
 	
 	opcodeConstants = (char**) malloc(sizeof(char*) * 32);
+	psuedoOpcodes = (char**) malloc(sizeof(char*) * 3);
 	defineConstants(opcodeConstants);
+	definePsuedoOps(psuedoOpcodes);
 	
 	/* Opening assembly input file */
 	
@@ -117,19 +123,26 @@
 	currentSymbolTable = (symbolTable**) malloc(sizeof(symbolTable**) * maxSymbolTableSize);
 
 	/* Handle the .ORIG first */
+	
+	/* while (strcmp(currentLine[currentLineSize]->lineComponent[0], ".orig")){ */
 	do{
 		newLine = fetchLine(lineSize, readIn, successfulOpen);
+		sourceFileLocation += 1;
+	} while(!newLine);
 		currentLine[currentLineSize] = breakLine(lineSize, newLine);
+		printf("Test Line\n");
+		currentLine[currentLineSize]->linePosition = sourceFileLocation;
 		/* Account for empty lines */
 		while(currentLine[currentLineSize]->lineComponent[0] == 0){
 			newLine = fetchLine(lineSize, readIn, successfulOpen);
+			sourceFileLocation += 1;
 			currentLine[currentLineSize] = breakLine(lineSize, newLine);
 		}
-	} while (strcmp(currentLine[currentLineSize]->lineComponent[0], ".orig"));
 	memoryBegin = assignMemory(currentLine[currentLineSize], memoryInt);
 	totalLineCount += 1;
 	/* *memoryIntSecondPass = *memoryInt; */
 	printf("Memory Start: %d.\n", *memoryInt);
+	
 	
 	currentLineSize += 1;
 	
@@ -137,8 +150,10 @@
 	while (strcmp(currentLine[currentLineSize - 1]->lineComponent[0], ".end")){  /* The subtraction is confusing as shit. */
 		do {
 			newLine = fetchLine(lineSize, readIn, successfulOpen);
+			sourceFileLocation += 1;
 		} while (!newLine);
 		currentLine[currentLineSize] = breakLine(lineSize, newLine);
+		currentLine[currentLineSize]->linePosition = sourceFileLocation;
 			if(currentLineSize > maxCurrentLineSize - 10){
 				maxCurrentLineSize *= 2;
 				tempLinePtr = realloc((symbolTable**) currentLine, maxCurrentLineSize);
@@ -149,7 +164,9 @@
 		/* Account for empty lines */
 		while(currentLine[currentLineSize]->lineComponent[0] == 0){
 			newLine = fetchLine(lineSize, readIn, successfulOpen);
+			sourceFileLocation += 1;
 			currentLine[currentLineSize] = breakLine(lineSize, newLine);
+			currentLine[currentLineSize]->linePosition = sourceFileLocation;
 				if(currentLineSize > maxCurrentLineSize - 10){
 					maxCurrentLineSize *= 2;
 					tempLinePtr = realloc((symbolTable**) currentLine, maxCurrentLineSize);
@@ -157,7 +174,7 @@
 				}			
 			
 		}
-		labelFlag = isThisALabel(currentLine[currentLineSize]->lineComponent[0], opcodeConstants);
+		labelFlag = isThisALabel(currentLine[currentLineSize]->lineComponent[0], opcodeConstants, psuedoOpcodes, currentLine[currentLineSize]->linePosition);
 		if(labelFlag){
 			if(symbolTableSize > maxSymbolTableSize - 10){
 				maxSymbolTableSize *= 2;
@@ -182,29 +199,29 @@
 	
 	for( j = 0; j < currentLineSize; j += 1){	
 		for( i = 0; i < currentLine[j]->lineComponentCount; i += 1){
-			printf("%d. %s  count: %d\n", i , currentLine[j]->lineComponent[i], currentLine[j]->lineComponentCount);
+			printf("%d. %s on line: %d  count: %d\n", i , currentLine[j]->lineComponent[i], currentLine[j]->linePosition, currentLine[j]->lineComponentCount);
 		}	
 	}
 		
 	for( i = 0; i < symbolTableSize; i += 1){
 		printf("%s     and       %d\n", currentSymbolTable[i]->symbol, currentSymbolTable[i]->memoryLocation);
 	}
-		
-	return(0);
   
 
 /*-------------------------- Second Pass -----------------------------*/  
 
 /* Need to disregard the first line because it is .orig */
-	int i;
+
 	int commandMatch = 0;
 
 	for(i = 1; i < currentLineSize; i += 1){
-		commandMatch = decodeCommand(currentLine[i]->lineComponent[0], opcodeConstants);
+		commandMatch = decodeCommand(currentLine[i]->lineComponent[0], opcodeConstants, currentLine[i]->linePosition);
 		if(commandMatch >= 0){
 			analyzeCommand(commandMatch, currentLine[i]);
 		}
 	}
+
+	return(0);
 
 }
  
@@ -345,7 +362,7 @@
   
 /*--------------------------- Function -------------------------------*/
  
-  int isThisALabel (char* labelPossible, char** opcodeConstants)
+  int isThisALabel (char* labelPossible, char** opcodeConstants, char** psuedoOpcode, int linePosition)
 {	 
  /*
   * Inputs: 1st argument of a line of code
@@ -358,16 +375,36 @@
 	
 	if(labelPossible[0] == 'x'){return(0);}
 	
+	/* Put a comparison to psuedo ops here. */
+	
+	for(i = 0; i < 3; i += 1){
+		if(!strcmp(labelPossible, psuedoOpcode[i])){
+		/* This is an error situation here that needs to be dropped to console with the line number. */	
+			return(0);
+		}
+	}	
+	
 	while(labelPossible[i] != 0){
-		if(!isalnum(labelPossible[i])){return(0);}
+		if(!isalnum(labelPossible[i])){
+		/* This is an error situation here that needs to be dropped to console with the line number. */	
+			printf("Error with label on line %d\n", linePosition);
+			return(0);
+		}
 		i += 1;
 		counter += 1;
 	}
 	
-	if(counter > 19){return(0);}
+	if(counter > 19){
+	/* This is an error situation here that needs to be dropped to console with the line number. */	
+	printf("Error with label on line %d\n", linePosition);
+		return(0);
+	}
 	
 	for(i = 0; i < 32; i += 1){
-		if(!strcmp(labelPossible, opcodeConstants[i])){return(0);}
+		if(!strcmp(labelPossible, opcodeConstants[i])){
+		/* This is an error situation here that needs to be dropped to console with the line number. */	
+			return(0);
+		}
 	}
 	
 	/*printf("Length of the potential label is: %d\n", counter);*/
@@ -377,33 +414,141 @@
 
 /*--------------------------- Function -------------------------------*/
  
-  int decodeCommand (char* command, char** opcodeConstants)
+  int decodeCommand (char* command, char** opcodeConstants, int linePosition)
 {
  /*
   * Inputs: char* of potential command, char** of opcodes as strings
   * Outputs: None
   * 
   --------------------------------------------------------------------*/ 
+	int i;
+	
+	/* printf("Inside decode.\n"); */
+	
 	for(i = 0; i < 32; i += 1){
 		if(!strcmp(command, opcodeConstants[i])){
 			return(i);
 		}
 	}
+	/* Throw an error before returning negative one. */
 	return(-1);  
 }
 
 /*--------------------------- Function -------------------------------*/
 
-	void analyzeCommand(int commandMatch, brokenLine* currentLine[i]);
+	void analyzeCommand(int commandMatch, brokenLine* currentLine)
 {
  /*
-  * Inputs: char** array to hold opcodes as strings
-  * Outputs: Initialization
+  * Inputs: Command matched, Line of command and operands
+  * Outputs: Boolean of correct format or no
   * 
   --------------------------------------------------------------------*/ 
   
   /* Take the command and operands and decide if it is in correct format.
    * Then send it to a switch function to be handled. */
+   /* NOTE: You really need to pass the associated struct. */
+   
+   /* printf("Inside analyze.\n"); */
+   switch(commandMatch)
+   {
+	   
+		case 0:
+			printf("Received opcode add\n");
+			break;		
+		case 1:
+			printf("Received opcode and\n");
+			break;
+		case 2:
+			printf("Received opcode puts\n");
+			break;
+		case 3:
+			printf("Received opcode halt\n");
+			break;
+		case 4:
+			printf("Received opcode jump\n");
+			break;
+		case 5:
+			printf("Received opcode jsr\n");
+			break;
+		case 6:
+			printf("Received opcode jsrr\n");
+			break;
+		case 7:
+			printf("Received opcode ldb\n");
+			break;
+		case 8:
+			printf("Received opcode ldw\n");
+			break;
+		case 9:
+			printf("Received opcode lea\n");
+			break;
+		case 10:
+			printf("Received opcode nop\n");
+			break;
+		case 11:
+			printf("Received opcode not\n");
+			break;
+		case 12:
+			printf("Received opcode ret\n");
+			break;
+		case 13:
+			printf("Received opcode lshf\n");
+			break;
+		case 14:
+			printf("Received opcode rshfl\n");
+			break;
+		case 15:
+			printf("Received opcode rshfa\n");
+			break;
+		case 16:
+			printf("Received opcode rti\n");
+			break;
+		case 17:
+			printf("Received opcode stb\n");
+			break;
+		case 18:
+			printf("Received opcode stw\n");
+			break;
+		case 19:
+			printf("Received opcode trap\n");
+			break;
+		case 20:
+			printf("Received opcode xor\n");
+			break;
+		case 21:
+			printf("Received opcode in\n");
+			break;
+		case 22:
+			printf("Received opcode out\n");
+			break;
+		case 23:
+			printf("Received opcode getc\n");
+			break;
+		case 24:
+			printf("Received opcode br\n");
+			break;
+		case 25:
+			printf("Received opcode br\n");
+			break;
+		case 26:
+			printf("Received opcode br\n");
+			break;
+		case 27:
+			printf("Received opcode br\n");
+			break;
+		case 28:
+			printf("Received opcode br\n");
+			break;
+		case 29:
+			printf("Received opcode br\n");
+			break;
+		case 30:
+			printf("Received opcode br\n");
+			break;
+		case 31:
+			printf("Received opcode br\n");
+			break;
+		}
   
 }
   
@@ -452,10 +597,20 @@
 	opcodeConstants[31] = "brnzp";
 }
 	
+/*--------------------------- Function -------------------------------*/
+ 
+  void definePsuedoOps (char** psuedoOpcodes)
+{
+ /*
+  * Inputs: char** array to hold pseudo opcodes as strings
+  * Outputs: Initialization
+  * 
+  --------------------------------------------------------------------*/ 
+	psuedoOpcodes[0] = ".orig";
+  	psuedoOpcodes[1] = ".fill";
+  	psuedoOpcodes[2] = ".end";
 	
-	
-	
-	
+}
 	
 	
 	

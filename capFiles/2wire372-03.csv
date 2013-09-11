@@ -1,0 +1,11 @@
+
+BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
+00:24:56:D2:3C:A9, 2013-08-24 22:33:13, 2013-08-24 22:51:45,  6,  54, WPA2WPA , CCMP TKIP,PSK, -59,     1587,     2121,   0.  0.  0.  0,   8, 2WIRE372, 
+
+Station MAC, First time seen, Last time seen, Power, # packets, BSSID, Probed ESSIDs
+9C:04:EB:E7:F8:4F, 2013-08-24 22:34:24, 2013-08-24 22:38:59, -68,     1198, 00:24:56:D2:3C:A9,
+34:C0:59:72:3C:26, 2013-08-24 22:33:15, 2013-08-24 22:33:47,   0,     1179, 00:24:56:D2:3C:A9,
+88:87:17:78:37:9C, 2013-08-24 22:34:58, 2013-08-24 22:45:34, -67,     2210, 00:24:56:D2:3C:A9,
+E4:CE:8F:56:46:79, 2013-08-24 22:33:22, 2013-08-24 22:47:46, -55,     1233, 00:24:56:D2:3C:A9,
+10:0B:A9:95:32:AC, 2013-08-24 22:33:32, 2013-08-24 22:51:33,   0,     5275, 00:24:56:D2:3C:A9,
+

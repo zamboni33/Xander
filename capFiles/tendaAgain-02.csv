@@ -1,0 +1,7 @@
+
+BSSID, First time seen, Last time seen, channel, Speed, Privacy, Cipher, Authentication, Power, # beacons, # IV, LAN IP, ID-length, ESSID, Key
+C8:3A:35:00:65:98, 2013-08-24 22:14:35, 2013-08-24 22:17:23,  1,  54, WPA , TKIP,PSK, -65,      253,      117,   0.  0.  0.  0,  12, Tenda_006598, 
+
+Station MAC, First time seen, Last time seen, Power, # packets, BSSID, Probed ESSIDs
+00:1E:65:EC:1F:64, 2013-08-24 22:14:35, 2013-08-24 22:17:17, -81,     1285, C8:3A:35:00:65:98,
+
