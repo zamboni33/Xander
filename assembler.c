@@ -23,7 +23,6 @@
  #include <string.h>
  #include <math.h>
  #include <ctype.h>
- #include <ctype.h>
  
  /* User */
  /* #include "assembler.h" */
@@ -51,12 +50,13 @@
  char* assignMemory(brokenLine* currentLine, unsigned int* memory);
  int isThisALabel (char* labelPossible, char** opcodeConstants);
  void defineConstants(char** opcodeConstants);
+ int decodeCommand (char* command, char** opcodeConstants);
+ void analyzeCommand(int commandMatch, brokenLine* currentLine[i]);
  
 /*------------------------- Implementation ---------------------------*/
  
  int main (int argc, char* argv[])
- {
-	 
+{	 
  /*
   * Inputs: File containing human readable LC3 code, Output Filename
   * Outputs: LC3b bytecoded assembly
@@ -135,7 +135,9 @@
 	
 	/* Scan the rest of the assembly file now. */
 	while (strcmp(currentLine[currentLineSize - 1]->lineComponent[0], ".end")){  /* The subtraction is confusing as shit. */
-		newLine = fetchLine(lineSize, readIn, successfulOpen);
+		do {
+			newLine = fetchLine(lineSize, readIn, successfulOpen);
+		} while (!newLine);
 		currentLine[currentLineSize] = breakLine(lineSize, newLine);
 			if(currentLineSize > maxCurrentLineSize - 10){
 				maxCurrentLineSize *= 2;
@@ -189,19 +191,27 @@
 	}
 		
 	return(0);
-  }
   
 
 /*-------------------------- Second Pass -----------------------------*/  
 
+/* Need to disregard the first line because it is .orig */
+	int i;
+	int commandMatch = 0;
 
-  
+	for(i = 1; i < currentLineSize; i += 1){
+		commandMatch = decodeCommand(currentLine[i]->lineComponent[0], opcodeConstants);
+		if(commandMatch >= 0){
+			analyzeCommand(commandMatch, currentLine[i]);
+		}
+	}
+
+}
  
 /*--------------------------- Function -------------------------------*/
   
   brokenLine* breakLine (int* lineSize, char* readIn)
- { 
-	 
+{ 	 
  /*
   * Inputs: Size of and line to read
   * Outputs: The line broken into args
@@ -241,8 +251,7 @@
 /*--------------------------- Function -------------------------------*/
   
   char* fetchLine (int* lineSize, char* readIn, FILE* successfulOpen)
- {
-	 
+{	 
  /*
   * Inputs: Successful file read int, memory to read to, FILE to read from
   * Outputs: Returns a line of code in char* form.
@@ -271,7 +280,15 @@
 		*lineSize = fread( (char*) readIn, 1, 1, successfulOpen);
 	}
 	fsetpos (successfulOpen, &savedPosition);
-	/* printf("Size of command: %d\n", counter); */
+	/* printf("Size of command: %d\n", lengthResult); */
+	
+	/* If nothing useful on the line then let's skip saving it. */
+	if(lengthResult == 0){
+		for(i = 0; i < counter + 1; i += 1){
+			fread( (char*) readIn, 1, 1, successfulOpen);
+		}
+		return(0);
+	}
 	
 	/* Now we have the length of the new command. */
 	char* newLine = (char*) malloc(counter);
@@ -303,8 +320,7 @@
 /*--------------------------- Function -------------------------------*/ 
  
   char* assignMemory (brokenLine* origLine, unsigned int* startPos)
- {
-	 
+{	 
  /*
   * Inputs: orig Line memory information
   * Outputs: Variable for where memory starts
@@ -330,8 +346,7 @@
 /*--------------------------- Function -------------------------------*/
  
   int isThisALabel (char* labelPossible, char** opcodeConstants)
- {
-	 
+{	 
  /*
   * Inputs: 1st argument of a line of code
   * Outputs: Bool specifying whether or not it is a label
@@ -358,14 +373,45 @@
 	/*printf("Length of the potential label is: %d\n", counter);*/
 	
 	return(1);
- }
-
+}
 
 /*--------------------------- Function -------------------------------*/
  
+  int decodeCommand (char* command, char** opcodeConstants)
+{
+ /*
+  * Inputs: char* of potential command, char** of opcodes as strings
+  * Outputs: None
+  * 
+  --------------------------------------------------------------------*/ 
+	for(i = 0; i < 32; i += 1){
+		if(!strcmp(command, opcodeConstants[i])){
+			return(i);
+		}
+	}
+	return(-1);  
+}
+
+/*--------------------------- Function -------------------------------*/
+
+	void analyzeCommand(int commandMatch, brokenLine* currentLine[i]);
+{
+ /*
+  * Inputs: char** array to hold opcodes as strings
+  * Outputs: Initialization
+  * 
+  --------------------------------------------------------------------*/ 
+  
+  /* Take the command and operands and decide if it is in correct format.
+   * Then send it to a switch function to be handled. */
+  
+}
+  
+  
+/*--------------------------- Function -------------------------------*/
+ 
   void defineConstants (char** opcodeConstants)
- {
-	 
+{
  /*
   * Inputs: char** array to hold opcodes as strings
   * Outputs: Initialization
@@ -404,7 +450,7 @@
 	opcodeConstants[29] = "brnz";
 	opcodeConstants[30] = "brzp";
 	opcodeConstants[31] = "brnzp";
- }
+}
 	
 	
 	

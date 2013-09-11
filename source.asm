@@ -1,4 +1,5 @@
     .ORIG #4096
+; Nothing but shit on this line.
 A    LEA R1, Y
     LDW R1, R1, #0
     LDW R1, R1, #0
