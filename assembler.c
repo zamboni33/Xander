@@ -175,6 +175,7 @@
 			
 		}
 		labelFlag = isThisALabel(currentLine[currentLineSize]->lineComponent[0], opcodeConstants, psuedoOpcodes, currentLine[currentLineSize]->linePosition);
+		/* Send in the pointer to the struct and bump it if its an erroneous label. */
 		if(labelFlag){
 			if(symbolTableSize > maxSymbolTableSize - 10){
 				maxSymbolTableSize *= 2;
@@ -346,6 +347,9 @@
   
 	  char* hexString = (char*) malloc(sizeof(char) * 6);
 	  
+	  /* BIG ERROR HERE: WHAT IF HE SENDS IN AN INVALID START MEMORY */
+	  
+	  
 	  if(origLine->lineComponent[1][0] == '#'){
 		  *startPos = atoi(&origLine->lineComponent[1][1]);
 		  snprintf (hexString, 7, "0x%x", *startPos);
@@ -379,7 +383,7 @@
 	
 	for(i = 0; i < 3; i += 1){
 		if(!strcmp(labelPossible, psuedoOpcode[i])){
-		/* This is an error situation here that needs to be dropped to console with the line number. */	
+		/* This is a psuedo op. */	
 			return(0);
 		}
 	}	
@@ -395,14 +399,16 @@
 	}
 	
 	if(counter > 19){
-	/* This is an error situation here that needs to be dropped to console with the line number. */	
-	printf("Error with label on line %d\n", linePosition);
+		/* This is an error situation here that needs to be dropped to console with the line number. */	
+		printf("Error with label on line %d\n", linePosition);
+		labelPossible = 0;
 		return(0);
 	}
 	
 	for(i = 0; i < 32; i += 1){
 		if(!strcmp(labelPossible, opcodeConstants[i])){
-		/* This is an error situation here that needs to be dropped to console with the line number. */	
+		/* This is an opcode. */	
+		labelPossible = 0;
 			return(0);
 		}
 	}
@@ -424,6 +430,8 @@
 	int i;
 	
 	/* printf("Inside decode.\n"); */
+	
+	/* If I send in a null, it was a bad label. Return -1. */
 	
 	for(i = 0; i < 32; i += 1){
 		if(!strcmp(command, opcodeConstants[i])){
@@ -548,6 +556,10 @@
 		case 31:
 			printf("Received opcode br\n");
 			break;
+		
+		
+		default: 
+			printf("How the fuck?");
 		}
   
 }
