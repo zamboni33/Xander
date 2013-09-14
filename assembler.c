@@ -52,7 +52,7 @@
  int isThisALabel (char* labelPossible, char** opcodeConstants, char** psuedoOpcodes, int linePosition);
  void defineConstants(char** opcodeConstants);
  void definePsuedoOps (char** psuedoOpcodeConstants);
- int decodeCommand (char* command, char** opcodeConstants, int linePosition);
+ int decodeCommand (char* command, char** opcodeConstants, char** psuedoOpcode, int linePosition);
  void analyzeCommand(int commandMatch, brokenLine* currentLine /* Dereferenced */);
  
 /*------------------------- Implementation ---------------------------*/
@@ -216,7 +216,7 @@
 	int commandMatch = 0;
 
 	for(i = 1; i < currentLineSize; i += 1){
-		commandMatch = decodeCommand(currentLine[i]->lineComponent[0], opcodeConstants, currentLine[i]->linePosition);
+		commandMatch = decodeCommand(currentLine[i]->lineComponent[0], opcodeConstants, psuedoOpcodes, currentLine[i]->linePosition);
 		if(commandMatch >= 0){
 			analyzeCommand(commandMatch, currentLine[i]);
 		}
@@ -227,7 +227,6 @@
 }
  
 /*--------------------------- Function -------------------------------*/
-  
   brokenLine* breakLine (int* lineSize, char* readIn)
 { 	 
  /*
@@ -267,7 +266,6 @@
 } 
  
 /*--------------------------- Function -------------------------------*/
-  
   char* fetchLine (int* lineSize, char* readIn, FILE* successfulOpen)
 {	 
  /*
@@ -336,7 +334,6 @@
 } 
 
 /*--------------------------- Function -------------------------------*/ 
- 
   char* assignMemory (brokenLine* origLine, unsigned int* startPos)
 {	 
  /*
@@ -365,7 +362,6 @@
   
   
 /*--------------------------- Function -------------------------------*/
- 
   int isThisALabel (char* labelPossible, char** opcodeConstants, char** psuedoOpcode, int linePosition)
 {	 
  /*
@@ -401,6 +397,7 @@
 	if(counter > 19){
 		/* This is an error situation here that needs to be dropped to console with the line number. */	
 		printf("Error with label on line %d\n", linePosition);
+		/* Assigning zero here is doing nothing." */
 		labelPossible = 0;
 		return(0);
 	}
@@ -419,8 +416,7 @@
 }
 
 /*--------------------------- Function -------------------------------*/
- 
-  int decodeCommand (char* command, char** opcodeConstants, int linePosition)
+  int decodeCommand (char* command, char** opcodeConstants, char** psuedoOpcode, int linePosition)
 {
  /*
   * Inputs: char* of potential command, char** of opcodes as strings
@@ -432,6 +428,18 @@
 	/* printf("Inside decode.\n"); */
 	
 	/* If I send in a null, it was a bad label. Return -1. */
+	if(command[0] == 0){
+		printf("Did not analyze the bad label.\n");
+		return(-1);
+	}
+	
+	for(i = 0; i < 3; i += 1){
+		if(!strcmp(command, psuedoOpcode[i])){
+		/* This is a psuedo op. */	
+		/* Need to do something with the psuedo op here. */
+			return(-1);
+		}
+	}
 	
 	for(i = 0; i < 32; i += 1){
 		if(!strcmp(command, opcodeConstants[i])){
@@ -439,11 +447,11 @@
 		}
 	}
 	/* Throw an error before returning negative one. */
+	printf("Problem with opcode on line %d.\n", linePosition);
 	return(-1);  
 }
 
 /*--------------------------- Function -------------------------------*/
-
 	void analyzeCommand(int commandMatch, brokenLine* currentLine)
 {
  /*
@@ -566,7 +574,6 @@
   
   
 /*--------------------------- Function -------------------------------*/
- 
   void defineConstants (char** opcodeConstants)
 {
  /*
@@ -610,7 +617,6 @@
 }
 	
 /*--------------------------- Function -------------------------------*/
- 
   void definePsuedoOps (char** psuedoOpcodes)
 {
  /*
