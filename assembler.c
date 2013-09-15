@@ -56,12 +56,10 @@
  char* fetchLine (int* lineSize, char* readIn, FILE* successfulOpen);
  char* assignMemory(brokenLine* currentLine, unsigned int* memory);
  int isThisALabel (brokenLine* labelPossible, char** opcodeConstants, char** psuedoOpcodes, int linePosition);
- void defineConstants(char** opcodeConstants);
- void definePsuedoOps (char** psuedoOpcodeConstants);
  int decodeCommand (brokenLine* command, char** opcodeConstants, char** psuedoOpcode, int linePosition);
  void analyzeCommand(int commandMatch, brokenLine* currentLine, symbolTable** currentSymbolTable, int symbolTableSize);
  
- void checkRegister (brokenLine* currentStruct, char* whichRegister);
+ unsigned int checkRegister (brokenLine* currentStruct, char* whichRegister);
  int checkImmediate (brokenLine* currentStruct, char* immediateString, int max, int min);
  unsigned int checkSymbol (brokenLine* currentStruct, char* symbolString, symbolTable** currentSymbolTable, int symbolTableSize);
  void checkAdd (brokenLine* operands, int immediateFlag, int immediate);
@@ -72,6 +70,10 @@
  void checkNot(brokenLine* currentLine);
  void checkRet(brokenLine* currentLine);
  void checkRti(brokenLine* currentLine);
+ 
+ char* binaryTranslate (int decimal, int length);
+ void defineConstants(char** opcodeConstants);
+ void definePsuedoOps (char** psuedoOpcodeConstants);
  
 /*------------------------- Implementation ---------------------------*/
  
@@ -529,6 +531,17 @@
    int max = 0;
    int min = 0;
    unsigned int offsetAddress = 0;
+   unsigned int reg1 = 0;
+   unsigned int reg2 = 0;
+   unsigned int reg3 = 0;
+   char* reg1bin;
+   char* reg2bin;
+   char* reg3bin;
+   char* offsetChar;
+   
+   reg1bin = (char*) malloc(sizeof(char) * 3);
+   reg2bin = (char*) malloc(sizeof(char) * 3);
+   reg3bin = (char*) malloc(sizeof(char) * 3);
    
    switch(commandMatch)
    {
@@ -537,11 +550,11 @@
 			printf("Checking ADD.\n");
 			if(currentLine->lineComponentCount != 4){currentLine->invalid = 4;}
 			printf("String %s\n", currentLine->lineComponent[1]);
-			checkRegister(currentLine, currentLine->lineComponent[1]);
-			checkRegister(currentLine, currentLine->lineComponent[2]);
+			reg1 = checkRegister(currentLine, currentLine->lineComponent[1]);
+			reg2 = checkRegister(currentLine, currentLine->lineComponent[2]);
 			if(currentLine->lineComponent[3][0] == 'r'){
 				/* printf("Checking this register: %s\n", currentLine->lineComponent[3]); */
-				checkRegister(currentLine, currentLine->lineComponent[3]);
+				reg3 = checkRegister(currentLine, currentLine->lineComponent[3]);
 			} else{
 				max = 15;
 				min = -16;
@@ -549,7 +562,11 @@
 				immediateFlag = 1;
 			}
 			if(!currentLine->invalid){
+				reg1bin = binaryTranslate(reg1, 3);
+				reg2bin = binaryTranslate(reg2, 3);
+				reg3bin = binaryTranslate(reg3, 3);
 				checkAdd(currentLine, immediateFlag, immediate);
+				
 			}
 			break;		
 			
@@ -557,11 +574,11 @@
 			printf("Checking AND.\n");
 			if(currentLine->lineComponentCount != 4){currentLine->invalid = 4;}
 			printf("String %s\n", currentLine->lineComponent[1]);
-			checkRegister(currentLine, currentLine->lineComponent[1]);
-			checkRegister(currentLine, currentLine->lineComponent[2]);
+			reg1 = checkRegister(currentLine, currentLine->lineComponent[1]);
+			reg2 = checkRegister(currentLine, currentLine->lineComponent[2]);
 			if(currentLine->lineComponent[3][0] == 'r'){
 				/* printf("Checking this register: %s\n", currentLine->lineComponent[3]); */
-				checkRegister(currentLine, currentLine->lineComponent[3]);
+				reg3 = checkRegister(currentLine, currentLine->lineComponent[3]);
 			} else{
 				max = 15;
 				min = -16;
@@ -569,6 +586,7 @@
 				immediateFlag = 1;
 			}
 			if(!currentLine->invalid){
+				
 				checkAnd(currentLine, immediateFlag, immediate);
 			}
 			break;	
@@ -576,11 +594,11 @@
 		case 2:
 			printf("Checking XOR.\n");
 			if(currentLine->lineComponentCount != 4){currentLine->invalid = 4;}
-			checkRegister(currentLine, currentLine->lineComponent[1]);
-			checkRegister(currentLine, currentLine->lineComponent[2]);
+			reg1 = checkRegister(currentLine, currentLine->lineComponent[1]);
+			reg2 = checkRegister(currentLine, currentLine->lineComponent[2]);
 			if(currentLine->lineComponent[3][0] == 'r'){
 				/* printf("Checking this register: %s\n", currentLine->lineComponent[3]); */
-				checkRegister(currentLine, currentLine->lineComponent[3]);
+				reg3 = checkRegister(currentLine, currentLine->lineComponent[3]);
 			} else{
 				max = 15;
 				min = -16;
@@ -595,7 +613,7 @@
 		case 3:
 			printf("Received opcode jmp\n");
 			if(currentLine->lineComponentCount != 2){currentLine->invalid = 4;}
-			checkRegister(currentLine, currentLine->lineComponent[1]);
+			reg1 = checkRegister(currentLine, currentLine->lineComponent[1]);
 			if(!currentLine->invalid){
 				checkJmp(currentLine);
 			}
@@ -603,7 +621,7 @@
 		case 4:
 			printf("Received opcode jsrr\n");
 			if(currentLine->lineComponentCount != 2){currentLine->invalid = 4;}
-			checkRegister(currentLine, currentLine->lineComponent[1]);
+			reg1 = checkRegister(currentLine, currentLine->lineComponent[1]);
 			if(!currentLine->invalid){
 				checkJsrr(currentLine);
 			}
@@ -638,12 +656,17 @@
 			break;
 		case 13:
 			printf("Received opcode nop\n");
+			if(currentLine->lineComponentCount != 1){currentLine->invalid = 4;}
+			if(!currentLine->invalid){
+				currentLine->lineDrop = atoi("0000");
+				printf("Value of the lineDrop is: %d\n", currentLine->lineDrop);
+			}
 			break;
 		case 14:
 			printf("Received opcode not\n");
 			if(currentLine->lineComponentCount != 3){currentLine->invalid = 4;}
-			checkRegister(currentLine, currentLine->lineComponent[1]);
-			checkRegister(currentLine, currentLine->lineComponent[2]);
+			reg1 = checkRegister(currentLine, currentLine->lineComponent[1]);
+			reg2 = checkRegister(currentLine, currentLine->lineComponent[2]);
 			if(!currentLine->invalid){
 				checkNot(currentLine);
 			}			
@@ -652,7 +675,8 @@
 			printf("Received opcode ret\n");
 			if(currentLine->lineComponentCount != 1){currentLine->invalid = 4;}
 			if(!currentLine->invalid){
-				checkRet(currentLine);
+				currentLine->lineDrop = atoi("49600");
+				printf("Value of the lineDrop is: %d\n", currentLine->lineDrop);
 			}			
 			break;
 		case 16:
@@ -665,9 +689,16 @@
 			break;
 		case 17:
 			printf("Received opcode halt\n");
+			if(currentLine->lineComponentCount != 1){currentLine->invalid = 4;}
+			if(!currentLine->invalid){
+				currentLine->lineDrop = atoi("61477");
+				printf("Value of the lineDrop is: %d\n", currentLine->lineDrop);
+			}
 			break;
 		case 18:
 			printf("Received opcode jsr\n");
+			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
 			break;
 		case 19:
 			printf("Received opcode trap\n");
@@ -687,41 +718,52 @@
 		case 24:
 			printf("Received opcode brn\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
-			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
+			offsetAddress -= programCounter;
+			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter); 
+			/* offsetAddress /= 2; */
+			offsetChar = binaryTranslate(offsetAddress, 9);
+			printf("Binary Offset is: %s\n", offsetChar);
 			break;
 		case 25:
 			printf("Received opcode brp\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			offsetAddress -= programCounter;
 			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
 			break;
 		case 26:
 			printf("Received opcode brnp\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			offsetAddress -= programCounter;
 			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
 			break;
 		case 27:
 			printf("Received opcode br\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			offsetAddress -= programCounter;
 			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);			
 			break;
 		case 28:
 			printf("Received opcode br\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			offsetAddress -= programCounter;
 			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
 			break;
 		case 29:
 			printf("Received opcode br\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			offsetAddress -= programCounter;
 			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
 			break;
 		case 30:
 			printf("Received opcode br\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			offsetAddress -= programCounter;
 			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
 			break;
 		case 31:
 			printf("Received opcode br\n");
 			offsetAddress = checkSymbol(currentLine, currentLine->lineComponent[1], currentSymbolTable, symbolTableSize);
+			offsetAddress -= programCounter;
 			printf("The offset address is: %d and the line address is %d\n", offsetAddress, programCounter);
 			break;
 		case 32:
@@ -730,9 +772,12 @@
 			break;
 		case 33:
 			printf("Received psuedo op .fill\n");
+			if(currentLine->lineComponentCount != 2){currentLine->invalid = 4;}
+			
 			break;
 		case 34:
 			printf("Received psuedo op .end\n");
+			if(currentLine->lineComponentCount != 1){currentLine->invalid = 4;}
 			break;
 		
 		
@@ -743,7 +788,7 @@
 }
  
  /*--------------------------- Function -------------------------------*/
-  void checkRegister (brokenLine* currentStruct, char* whichRegister)
+  unsigned int checkRegister (brokenLine* currentStruct, char* whichRegister)
 {
  /*
   * Inputs: char** array to hold opcodes as strings
@@ -752,7 +797,7 @@
   --------------------------------------------------------------------*/ 
  
  	int i = 0;
-	int regSize = 0;
+	unsigned int regSize = 0;
 	char* tempPtr;
 	
 	if(!currentStruct->invalid){
@@ -763,19 +808,20 @@
 		if(regSize == 0 && whichRegister[1] != '0'){
 			/* printf("Fucked operand\n"); */
 			currentStruct->invalid = 4;
-			return;
+			return(8);
 		}
 		
 		if(regSize < 0 || regSize > 7){
 			/* printf("Register number too big\n"); */
 			currentStruct->invalid = 4;
-			return;
+			return(8);
 		}	
 	}
 
 	if(currentStruct->invalid){
 		printf("Error within operands on line %d\n", currentStruct->linePosition);
 	}
+	return(regSize);
 }
 
 /*--------------------------- Function -------------------------------*/
@@ -954,10 +1000,40 @@
  
  
  
+/*--------------------------- Function -------------------------------*/
+  char* binaryTranslate (int decimal, int length)
+{
+ /*
+  * Inputs: brokenLine* containing operands to check for validity
+  * Outputs: ErrorCode
+  * 
+  --------------------------------------------------------------------*/ 
  
+  int c, k;
+  short n;
+  n = (short)decimal;
+  
+  
+  char* tempPtr = (char*) malloc( (sizeof(int)));
  
+  k = n;
+  printf("k = %d\n", k);
+  for (c = 15; c >= 0; c--){
+    /* k = n >> c; */
  
+    if (k & 1){tempPtr[c] = '1';}
+    else{tempPtr[c] = '0';}
+    k = k >> 1;
+  }
+  
+  /* tempPtr[length] = 0; */
  
+  return tempPtr;
+} 
+  
+  
+  
+  
   
   
 /*--------------------------- Function -------------------------------*/
