@@ -1,0 +1,655 @@
+.orig #4096
+ADD R6, R5, R3
+AND R6, R7, R4
+AND R1, R1, R2
+AND R1, R4, R1
+ADD R2, R4, R0
+AND R5, R3, R1
+ADD R1, R7, R2
+AND R2, R0, R2
+AND R4, R4, R1
+AND R3, R5, R0
+ADD R5, R5, R2
+AND R4, R2, R7
+AND R1, R6, R3
+AND R6, R3, R0
+AND R5, R7, R6
+AND R5, R0, R7
+AND R3, R5, R1
+ADD R5, R5, R7
+AND R7, R0, R7
+AND R6, R6, R4
+AND R5, R6, R0
+AND R7, R2, R5
+AND R2, R5, R6
+AND R2, R3, R6
+AND R7, R2, R5
+AND R7, R6, R3
+AND R1, R7, R6
+ADD R0, R5, R1
+ADD R6, R2, R2
+ADD R3, R3, R5
+ADD R1, R5, R2
+AND R3, R6, R6
+ADD R6, R6, R2
+ADD R5, R6, R4
+ADD R5, R3, R2
+ADD R7, R0, R1
+AND R6, R7, R7
+AND R2, R3, R1
+ADD R3, R4, R3
+AND R3, R6, R4
+ADD R7, R3, R5
+AND R3, R1, R3
+AND R0, R3, R1
+ADD R2, R4, R5
+ADD R0, R0, R3
+AND R3, R2, R0
+AND R4, R6, R0
+ADD R1, R3, R0
+AND R4, R5, R1
+AND R4, R0, R7
+ADD R4, R1, R3
+ADD R3, R2, R5
+AND R1, R1, R0
+ADD R3, R5, R4
+AND R6, R2, R6
+ADD R7, R1, R7
+AND R3, R3, R4
+AND R7, R0, R5
+ADD R2, R5, R5
+AND R1, R1, R2
+AND R3, R2, R3
+ADD R7, R4, R5
+ADD R0, R4, R2
+ADD R1, R7, R4
+AND R3, R6, R6
+AND R0, R0, R2
+ADD R7, R1, R4
+ADD R2, R5, R6
+AND R6, R6, R1
+AND R3, R2, R1
+ADD R1, R2, R1
+ADD R6, R7, R1
+ADD R1, R6, R6
+ADD R5, R1, R3
+AND R3, R7, R4
+ADD R2, R1, R6
+AND R0, R1, R3
+ADD R4, R1, R2
+AND R3, R5, R6
+AND R7, R3, R6
+AND R4, R7, R7
+AND R3, R0, R3
+AND R5, R2, R2
+ADD R3, R6, R4
+ADD R3, R3, R0
+ADD R5, R6, R3
+ADD R4, R1, R2
+ADD R5, R2, R7
+ADD R3, R3, R3
+ADD R3, R3, R4
+AND R4, R0, R6
+ADD R3, R6, R2
+AND R2, R4, R6
+ADD R4, R4, R3
+ADD R4, R4, R7
+ADD R3, R1, R6
+ADD R6, R2, R3
+ADD R7, R6, R6
+ADD R5, R3, R3
+ADD R5, R5, R5
+ADD R5, 	R0	, R7
+AND R4, 	R6	, R1
+ADD R4, 	R5	, R0
+AND R6, 	R3	, R3
+ADD R7, 	R4	, R7
+AND R1, 	R6	, R5
+AND R0, 	R7	, R7
+AND R1, 	R2	, R1
+ADD R6, 	R4	, R1
+ADD R6, 	R5	, R2
+AND R5, 	R6	, R4
+ADD R4, 	R7	, R5
+AND R7, 	R7	, R4
+ADD R5, 	R7	, R2
+AND R2, 	R0	, R5
+AND R2, 	R1	, R5
+AND R0, 	R4	, R4
+ADD R7, 	R3	, R6
+AND R1, 	R2	, R0
+ADD R3, 	R3	, R2
+ADD R7, 	R6	, R2
+AND R5, 	R1	, R7
+ADD R1, 	R7	, R2
+ADD R5, 	R7	, R6
+AND R3, 	R1	, R2
+ADD R7, 	R3	, R7
+AND R3, 	R1	, R1
+AND R1, 	R3	, R7
+AND R7, 	R5	, R5
+AND R2, 	R2	, R4
+AND R3, 	R1	, R2
+ADD R2, 	R5	, R1
+AND R1, 	R2	, R4
+AND R0, 	R3	, R2
+AND R7, 	R2	, R2
+AND R0, 	R6	, R6
+ADD R5, 	R4	, R6
+ADD R5, 	R7	, R4
+AND R7, 	R7	, R3
+ADD R7, 	R1	, R6
+AND R0, 	R2	, R2
+AND R4, 	R4	, R3
+AND R1, 	R3	, R0
+AND R2, 	R6	, R0
+ADD R6, 	R6	, R5
+ADD R4, 	R0	, R0
+AND R6, 	R0	, R2
+ADD R0, 	R1	, R3
+ADD R6, 	R7	, R4
+AND R0, 	R0	, R2
+AND R0, R6, R6
+ADD R6, R1, R6
+ADD R5, R4, R4
+ADD R7, R3, R5
+ADD R5, R2, R5
+ADD R4, R7, R4
+ADD R3, R7, R6
+ADD R5, R4, R3
+ADD R1, R1, R6
+AND R2, R3, R3
+ADD R0, R6, R5
+ADD R0, R0, R0
+ADD R2, R0, R6
+ADD R1, R2, R4
+ADD R3, R7, R3
+AND R1, R6, R3
+AND R5, R3, R7
+AND R4, R4, R6
+ADD R1, R2, R5
+ADD R0, R0, R4
+ADD R4, R7, R3
+AND R5, R3, R4
+AND R3, R0, R2
+ADD R3, R1, R5
+AND R4, R0, R7
+ADD R6, R4, R4
+ADD R7, R5, R6
+ADD R2, R3, R0
+ADD R0, R4, R3
+ADD R4, R0, R1
+AND R1, R5, R0
+ADD R4, R3, R3
+ADD R6, R4, R2
+ADD R5, R2, R7
+AND R1, R1, R3
+AND R6, R3, R3
+AND R3, R6, R4
+ADD R4, R6, R4
+AND R2, R0, R5
+ADD R4, R0, R6
+AND R6, R0, R3
+ADD R6, R5, R0
+AND R2, R5, R0
+AND R5, R5, R7
+AND R6, R5, R7
+AND R4, R1, R5
+AND R5, R4, R5
+ADD R3, R2, R5
+ADD R3, R4, R1
+AND R7, R1, R1
+ADD R1, R5, #0
+AND R0, R0, #-16
+AND R4, R2, #2
+AND R0, R0, #-16
+AND R5, R1, #14
+ADD R2, R0, #-14
+ADD R3, R1, #-9
+ADD R2, R3, #8
+AND R4, R4, #-9
+ADD R5, R1, #-13
+ADD R2, R7, #-3
+ADD R5, R6, #11
+ADD R5, R3, #-15
+AND R2, R6, #-6
+AND R7, R4, #3
+ADD R4, R6, #-8
+AND R7, R6, #-6
+ADD R0, R5, #-10
+ADD R0, R6, #15
+ADD R2, R0, #-7
+ADD R7, R4, #-11
+AND R3, R2, #5
+ADD R5, R0, #-13
+ADD R2, R2, #10
+AND R0, R7, #14
+AND R5, R4, #1
+AND R3, R3, #-3
+ADD R5, R3, #-9
+ADD R2, R4, #-10
+ADD R6, R5, #-10
+ADD R1, R1, #-9
+AND R0, R1, #-5
+AND R4, R5, #14
+AND R0, R5, #5
+ADD R3, R5, #-10
+ADD R4, R4, #10
+AND R6, R4, #13
+AND R3, R1, #12
+AND R5, R5, #-3
+ADD R1, R3, #8
+ADD R1, R1, #-14
+AND R2, R5, #4
+ADD R3, R6, #3
+ADD R5, R4, #-1
+ADD R7, R7, #-10
+AND R4, R0, #-16
+AND R6, R0, #14
+AND R6, R6, #14
+ADD R7, R1, #-1
+ADD R4, R6, #-9
+AND R3, R6, x-6
+AND R7, R2, x9
+ADD R3, R1, x-6
+AND R7, R5, x4
+ADD R3, R2, x5
+ADD R6, R6, x4
+ADD R4, R1, x-7
+AND R3, R1, x4
+AND R7, R1, x-6
+ADD R5, R5, x-8
+ADD R4, R3, x-6
+AND R2, R0, x1
+AND R5, R3, x3
+ADD R0, R4, x-2
+AND R0, R1, x7
+ADD R7, R1, x9
+AND R6, R1, x-8
+ADD R2, R4, x-4
+AND R4, R0, x7
+ADD R3, R1, x1
+ADD R3, R0, x8
+AND R2, R1, x-1
+ADD R2, R2, x-2
+AND R0, R5, x6
+AND R5, R4, x-5
+AND R0, R1, x5
+AND R4, R0, x6
+ADD R2, R5, x8
+ADD R0, R0, x1
+AND R3, R1, x-6
+AND R3, R6, x8
+ADD R3, R4, x8
+AND R5, R0, x4
+AND R7, R2, x-7
+AND R5, R0, x-1
+ADD R7, R6, x-9
+ADD R6, R7, x3
+ADD R0, R4, x-1
+ADD R4, R7, x2
+ADD R2, R6, x5
+AND R0, R4, x-1
+AND R6, R3, x-1
+ADD R7, R6, x3
+AND R0, R3, x0
+ADD R0, R0, x2
+ADD R4, R5, x5
+AND R7, R4, x-7
+AND R0, R1, x-6
+AND R3, R2, x-7
+AND R3, R0, x-5
+brzp A
+brnp A
+brp A
+brp A
+brn A
+br A
+brnp A
+brnz A
+brp A
+brnz A
+brnp A
+brzp A
+br A
+brnp A
+brzp A
+brnzp A
+brnp A
+br A
+br A
+brz A
+br A
+brp A
+brnzp A
+brnz A
+brnz A
+brn A
+brp A
+brz A
+brn A
+brp A
+brnzp A
+brnp A
+brp A
+brnzp A
+br A
+brp A
+brp A
+brnp A
+brnp A
+brn A
+brp A
+brzp A
+brz A
+brp A
+br A
+brnzp A
+brnzp A
+brnz A
+brz A
+br A
+LEA R2, A
+LEA R4, A
+LEA R2, A
+LEA R7, A
+LEA R2, A
+LEA R2, A
+LEA R4, A
+LEA R3, A
+LEA R0, A
+LEA R3, A
+LEA R6, A
+LEA R2, A
+LEA R0, A
+LEA R3, A
+LEA R1, A
+LEA R3, A
+LEA R2, A
+LEA R7, A
+LEA R7, A
+LEA R5, A
+LEA R3, A
+LEA R1, A
+LEA R6, A
+LEA R7, A
+LEA R0, A
+LEA R4, A
+LEA R5, A
+LEA R1, A
+LEA R0, A
+LEA R3, A
+LEA R3, A
+LEA R6, A
+LEA R6, A
+LEA R6, A
+LEA R4, A
+LEA R1, A
+LEA R2, A
+LEA R4, A
+LEA R7, A
+LEA R5, A
+LEA R6, A
+LEA R0, A
+LEA R2, A
+LEA R0, A
+LEA R3, A
+LEA R6, A
+LEA R2, A
+LEA R5, A
+LEA R7, A
+LEA R4, A
+A ADD R2, R3, #0
+brnp A
+brnp A
+brz A
+brn A
+brzp A
+brn A
+brnz A
+brz A
+brzp A
+brp A
+brnp A
+brzp A
+brp A
+brnzp A
+brnz A
+br A
+brnz A
+br A
+brzp A
+brnp A
+brnp A
+brn A
+brz A
+brn A
+brp A
+brp A
+brnzp A
+brn A
+br A
+brnzp A
+brn A
+br A
+brz A
+brnz A
+br A
+brnz A
+brz A
+brn A
+brn A
+brn A
+brnzp A
+brn A
+brnp A
+brz A
+brp A
+brnp A
+brzp A
+brzp A
+brnp A
+brnp A
+JMP R5
+JMP R0
+JMP R3
+JMP R3
+JMP R6
+JMP R0
+JMP R5
+JMP R7
+JMP R7
+JMP R1
+JMP R1
+JMP R5
+JMP R4
+JMP R5
+JMP R4
+JMP R4
+JMP R1
+JMP R5
+JMP R0
+JMP R1
+JMP R4
+JMP R0
+JMP R5
+JMP R4
+JMP R3
+JMP R5
+JMP R7
+JMP R2
+JMP R5
+JMP R1
+JMP R3
+JMP R2
+JMP R3
+JMP R0
+JMP R1
+JMP R3
+JMP R7
+JMP R4
+JMP R2
+JMP R0
+JMP R5
+JMP R0
+JMP R7
+JMP R3
+JMP R1
+JMP R4
+JMP R6
+JMP R1
+JMP R0
+JMP R2
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+JSR A
+Jsrr R2
+Jsrr R1
+Jsrr R2
+Jsrr R3
+Jsrr R4
+Jsrr R2
+Jsrr R2
+Jsrr R7
+Jsrr R5
+Jsrr R3
+Jsrr R6
+Jsrr R4
+Jsrr R3
+Jsrr R4
+Jsrr R2
+Jsrr R0
+Jsrr R0
+Jsrr R5
+Jsrr R0
+Jsrr R7
+Jsrr R2
+Jsrr R3
+Jsrr R1
+Jsrr R6
+Jsrr R5
+Jsrr R7
+Jsrr R0
+Jsrr R0
+Jsrr R5
+Jsrr R2
+Jsrr R4
+Jsrr R3
+Jsrr R1
+Jsrr R0
+Jsrr R3
+Jsrr R4
+Jsrr R5
+Jsrr R1
+Jsrr R3
+Jsrr R5
+Jsrr R2
+Jsrr R1
+Jsrr R0
+Jsrr R4
+Jsrr R4
+Jsrr R6
+Jsrr R7
+Jsrr R5
+Jsrr R1
+Jsrr R6
+Not R0, R3
+Not R1, R4
+Not R4, R6
+Not R4, R1
+Not R0, R3
+Not R3, R2
+Not R4, R7
+Not R7, R2
+Not R7, R7
+Not R2, R7
+Not R3, R2
+Not R2, R5
+Not R0, R1
+Not R1, R2
+Not R5, R1
+Not R4, R0
+Not R7, R7
+Not R0, R0
+Not R7, R1
+Not R3, R7
+Not R2, R2
+Not R7, R3
+Not R5, R1
+Not R4, R6
+Not R3, R4
+Not R5, R3
+Not R2, R0
+Not R6, R1
+Not R2, R0
+Not R5, R4
+Not R5, R6
+Not R6, R6
+Not R1, R3
+Not R5, R1
+Not R3, R6
+Not R6, R1
+Not R5, R3
+Not R1, R5
+Not R4, R4
+Not R7, R2
+Not R2, R3
+Not R0, R6
+Not R7, R1
+Not R6, R6
+Not R2, R3
+Not R4, R5
+Not R1, R5
+Not R1, R3
+Not R0, R5
+Not R5, R5
+Ret
+rti
+.end
